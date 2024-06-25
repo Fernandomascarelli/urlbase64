@@ -1,14 +1,17 @@
 import express from "express";
-import fetch from "node-fetch";
 import bodyParser from "body-parser";
+import axios from "axios";
 
 const app = express();
 app.use(bodyParser.json());
 
 async function getDataBlob(url) {
   try {
-    const res = await fetch(url);
-    const buffer = await res.buffer();
+    const response = await axios.get(url, {
+      responseType: "arraybuffer", // Define o tipo de resposta como arraybuffer
+    });
+
+    const buffer = Buffer.from(response.data);
     const base64Data = buffer.toString("base64");
     return base64Data;
   } catch (err) {
@@ -31,4 +34,6 @@ app.post("/", async (req, res) => {
   }
 });
 
-app.listen(3000);
+app.listen(3000, () => {
+  console.log("Servidor rodando na porta 3000");
+});
